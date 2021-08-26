@@ -1,15 +1,36 @@
-var http = require('http');
+var http = require("http");
+var buffer_corpo_response = [];
+var opcoes = {
+    hostname: "localhost",
+    port: 80,
+    path: "/",
+    method: 'post',
+    headers: {
+        "Accept": "application/json",
+        'Content-type' : 'application/json'
+    }
+}
 
-var buffer_corpo_response = []
 
-http.get('http://localhost', function(res){
+//Content-type
 
-    res.on('data', function(pedaco){
-        buffer_corpo_response.push(pedaco);
-    });
+var html = 'nome=Elton'; //x-www-form-urlencoded
+var json = {nome : 'ELton'};
+var string_json = JSON.stringify(json);
 
-    res.on('end', function(){
-        var corpo_response = Buffer.concat(buffer_corpo_response).toString();
-        console.log(corpo_response);
-    });
+    var buffer_corpo_response = [];
+
+    var req = http.request(opcoes, function(res){
+
+        res.on("data", function(pedaco){
+            buffer_corpo_response.push(pedaco);
+        });
+
+        res.on("end", function(){
+            var corpo_response = Buffer.concat(buffer_corpo_response).toString();
+            console.log(corpo_response);
+        });
 });
+
+req.write(string_json);
+req.end();
